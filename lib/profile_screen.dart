@@ -1,7 +1,115 @@
 import 'package:flutter/material.dart';
 
-class UserProfileScreen extends StatelessWidget {
+void main() {
+  runApp(const MaterialApp(home: UserProfileScreen()));
+}
+
+class UserProfileScreen extends StatefulWidget {
   const UserProfileScreen({Key? key}) : super(key: key);
+
+  @override
+  State<UserProfileScreen> createState() => _UserProfileScreenState();
+}
+
+class _UserProfileScreenState extends State<UserProfileScreen> {
+  // 1. Define State Variables to hold the profile data
+  String _name = 'Amna Arif';
+  String _email = 'amnaarif@apexcifytechnology.com';
+  String _role = 'Junior Flutter Developer';
+  String _location = 'Lahore, Pakistan';
+  String _phone = '+92 300 1234567';
+  String _linkedin = 'linkedin.com/in/amna-arif';
+  String _about =
+      'I’m a Junior Flutter Developer with a strong interest in building clean, responsive, and user-friendly mobile apps. I enjoy working with modern UI/UX, writing readable code, and learning new techniques.';
+
+  // 2. The function to show the Edit Dialog
+  void _showEditProfileDialog() {
+    final nameController = TextEditingController(text: _name);
+    final roleController = TextEditingController(text: _role);
+    final locationController = TextEditingController(text: _location);
+    final phoneController = TextEditingController(text: _phone);
+    final aboutController = TextEditingController(text: _about);
+    final emailController = TextEditingController(text: _email);
+
+    showDialog(
+      context: context,
+      builder: (context) {
+        final isDark = Theme.of(context).brightness == Brightness.dark;
+        final dialogColor = isDark ? const Color(0xFF1A2C2A) : Colors.white;
+
+        return AlertDialog(
+          backgroundColor: dialogColor,
+          title: const Text('Edit Profile'),
+          content: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                _buildTextField(nameController, 'Name', Icons.person),
+                const SizedBox(height: 10),
+                _buildTextField(roleController, 'Role', Icons.work),
+                const SizedBox(height: 10),
+                _buildTextField(emailController, 'Email', Icons.email),
+                const SizedBox(height: 10),
+                _buildTextField(locationController, 'Location', Icons.location_on),
+                const SizedBox(height: 10),
+                _buildTextField(phoneController, 'Phone', Icons.phone),
+                const SizedBox(height: 10),
+                _buildTextField(aboutController, 'About', Icons.info, maxLines: 3),
+              ],
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('Cancel', style: TextStyle(color: Colors.grey)),
+            ),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFF13ECDA),
+              ),
+              onPressed: () {
+                // 3. Update the state when Save is pressed
+                setState(() {
+                  _name = nameController.text;
+                  _role = roleController.text;
+                  _location = locationController.text;
+                  _phone = phoneController.text;
+                  _about = aboutController.text;
+                  _email = emailController.text;
+                });
+                Navigator.pop(context);
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('Profile Updated Successfully!')),
+                );
+              },
+              child: const Text(
+                'Save',
+                style: TextStyle(color: Color(0xFF102220)),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  // Helper widget for the text fields in the dialog
+  Widget _buildTextField(
+      TextEditingController controller,
+      String label,
+      IconData icon, {
+        int maxLines = 1,
+      }) {
+    return TextFormField(
+      controller: controller,
+      maxLines: maxLines,
+      decoration: InputDecoration(
+        labelText: label,
+        prefixIcon: Icon(icon, size: 20),
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -22,10 +130,7 @@ class UserProfileScreen extends StatelessWidget {
         title: const Text(
           'Profile',
           style: TextStyle(
-            color: Colors.white,
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
-          ),
+              color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
         ),
         centerTitle: true,
         actions: [
@@ -55,7 +160,7 @@ class UserProfileScreen extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Amna Arif',
+                        _name, // USING VARIABLE
                         style: TextStyle(
                           color: textColor,
                           fontSize: 24,
@@ -64,7 +169,7 @@ class UserProfileScreen extends StatelessWidget {
                       ),
                       const SizedBox(height: 4),
                       Text(
-                        'amnaarif@apexcifytechnology.com',
+                        _email, // USING VARIABLE
                         style: TextStyle(
                           color: subtitleColor,
                           fontSize: 16,
@@ -99,7 +204,7 @@ class UserProfileScreen extends StatelessWidget {
                     ),
                     const SizedBox(height: 8),
                     Text(
-                      'I’m a Junior Flutter Developer with a strong interest in building clean, responsive, and user-friendly mobile apps. I enjoy working with modern UI/UX, writing readable code, and learning new techniques to improve my development skills. I’m comfortable with Dart, state management basics, APIs integration, and Firebase. My goal is to grow as a developer and contribute to meaningful, real-world projects.',
+                      _about, // USING VARIABLE
                       style: TextStyle(
                         color: subtitleColor,
                         fontSize: 16,
@@ -119,7 +224,7 @@ class UserProfileScreen extends StatelessWidget {
                   child: _InfoCard(
                     icon: Icons.location_on,
                     label: 'Location',
-                    value: 'Lahore, Pakistan',
+                    value: _location, // USING VARIABLE
                     cardColor: cardColor,
                     textColor: textColor!,
                     subtitleColor: subtitleColor!,
@@ -131,7 +236,7 @@ class UserProfileScreen extends StatelessWidget {
                   child: _InfoCard(
                     icon: Icons.work,
                     label: 'Role',
-                    value: 'Junior Flutter developer',
+                    value: _role, // USING VARIABLE
                     cardColor: cardColor,
                     textColor: textColor,
                     subtitleColor: subtitleColor,
@@ -154,7 +259,7 @@ class UserProfileScreen extends StatelessWidget {
                   _ContactInfoRow(
                     icon: Icons.phone,
                     label: 'Phone',
-                    value: '+92 300 1234567',
+                    value: _phone, // USING VARIABLE
                     textColor: textColor,
                     subtitleColor: subtitleColor,
                     primaryColor: primaryColor,
@@ -163,7 +268,7 @@ class UserProfileScreen extends StatelessWidget {
                   _ContactInfoRow(
                     icon: Icons.email,
                     label: 'Email',
-                    value: 'im.amnaarif@gmail.com',
+                    value: _email, // USING VARIABLE
                     textColor: textColor,
                     subtitleColor: subtitleColor,
                     primaryColor: primaryColor,
@@ -172,7 +277,7 @@ class UserProfileScreen extends StatelessWidget {
                   _ContactInfoRow(
                     icon: Icons.link,
                     label: 'LinkedIn',
-                    value: 'linkedin.com/in/amna-arif',
+                    value: _linkedin, // USING VARIABLE
                     textColor: textColor,
                     subtitleColor: subtitleColor,
                     primaryColor: primaryColor,
@@ -194,8 +299,9 @@ class UserProfileScreen extends StatelessWidget {
           ],
         ),
       ),
+      // 4. Triggering the Edit Function
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+        onPressed: _showEditProfileDialog, // CALLING THE FUNCTION
         backgroundColor: primaryColor,
         child: const Icon(
           Icons.edit,
@@ -205,6 +311,10 @@ class UserProfileScreen extends StatelessWidget {
     );
   }
 }
+
+// ----------------------------------------------------------------
+//  HELPER WIDGETS (Kept same as before)
+// ----------------------------------------------------------------
 
 class _InfoCard extends StatelessWidget {
   final IconData icon;
